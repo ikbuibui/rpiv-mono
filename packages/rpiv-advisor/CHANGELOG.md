@@ -7,6 +7,10 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- **The `/advisor` picker follows the session-scoped model set.** When `--models` / the `enabledModels` setting narrows a session, `/advisor` now offers only those models instead of every authenticated one, so a scoped model list also scopes what can be picked as a reviewer. With no scope configured the picker keeps offering all available models. The currently configured advisor stays in the list even when it sits outside the scope, so its checkmark is still visible rather than the selection being silently orphaned. Hosts without the `scopedModels` context field read as "no scope" and are unaffected.
+
 ## [2.13.9] - 2026-10-17
 
 ### Changed

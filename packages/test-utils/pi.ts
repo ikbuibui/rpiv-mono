@@ -218,6 +218,12 @@ export interface MockCtxOptions {
 	model?: Model<Api>;
 	branch?: SessionEntry[];
 	models?: Model<Api>[];
+	/**
+	 * Pi's session-scoped models, as `ctx.scopedModels`. Omitted by default —
+	 * like a host predating the field — so callers exercise the no-scope path
+	 * unless they opt in.
+	 */
+	scopedModels?: Array<{ model: Model<Api>; thinkingLevel?: string }>;
 	ui?: Partial<ExtensionUIContext>;
 	/** Concurrency cap the ctx advertises. Defaults to 1 (sequential). */
 	maxConcurrency?: number;
@@ -242,6 +248,7 @@ export function createMockCtx(opts: MockCtxOptions = {}): ExtensionToolContext {
 		ui: createMockUI(opts.ui),
 		sessionManager: createMockSessionManager(opts.branch ?? [], opts.sessionId, opts.sessionName),
 		modelRegistry: createMockModelRegistry(opts.models ?? []),
+		scopedModels: opts.scopedModels,
 		isIdle: vi.fn(() => true),
 		tools: [],
 		executeTool: vi.fn(),

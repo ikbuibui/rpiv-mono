@@ -32,6 +32,7 @@ import {
 	RECOMMENDED_EFFORT_SUFFIX,
 } from "./messages.ts";
 import { isExecutorBlocked } from "./policy.ts";
+import { getScopedModels, selectAdvisorCandidates } from "./scope.ts";
 import { getAdvisorEffort, getAdvisorModel, setAdvisorEffort, setAdvisorModel } from "./state.ts";
 
 // Mirror: packages/rpiv-pi/extensions/rpiv-core/rpiv-models/items.ts
@@ -123,11 +124,20 @@ export function registerAdvisorCommand(pi: ExtensionAPI): void {
 				return;
 			}
 
-			const availableModels = ctx.modelRegistry.getAvailable();
 			const current = getAdvisorModel();
 			const currentKey = current ? modelKey(current) : undefined;
 
-			const choice = await showAdvisorPicker(ctx, buildModelItems(availableModels, currentKey));
+			// Narrow the picker to Pi's session-scoped models (the /scoped-models
+			// set), keeping the current advisor visible as the one explicit
+			// exception. Scope changes mid-session are picked up here because the
+			// candidates are rebuilt on every invocation.
+			const offeredModels = selectAdvisorCandidates({
+				available: ctx.modelRegistry.getAvailable(),
+				scoped: getScopedModels(ctx),
+				current,
+			});
+
+			const choice = await showAdvisorPicker(ctx, buildModelItems(offeredModels, currentKey));
 			if (!choice) return;
 
 			if (choice === NO_ADVISOR_VALUE) {
@@ -135,7 +145,11 @@ export function registerAdvisorCommand(pi: ExtensionAPI): void {
 				return;
 			}
 
-			const picked = availableModels.find((m) => modelKey(m) === choice);
+			// Resolve against the OFFERED models, not the full registry: a value
+			// outside the scope can never arrive through the picker, and keeping
+			// both lookups on one list prevents a stale/typed choice from
+			// selecting a model the user cannot see.
+			const picked = offeredModels.find((m) => modelKey(m) === choice);
 			if (!picked) {
 				ctx.ui.notify(errSelectionNotFound(choice), "error");
 				return;
