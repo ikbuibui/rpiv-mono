@@ -35,6 +35,12 @@ supports reasoning you get a second picker for its effort level (`high` is
 recommended). Pi confirms with `Advisor: <model>, <effort>`, and the `advisor`
 tool goes live for this and every future session.
 
+When the session's models are scoped (`--models`, or the `enabledModels`
+setting that `/scoped-models` edits), the picker offers only those scoped
+models, so it matches the list Ctrl+P cycles through. With no scope configured
+it offers everything, as before. Your current advisor is always included even
+if it falls outside the scope, so you can still see and deselect it.
+
 If the model you want isn't in the list, its provider isn't authenticated yet —
 run Pi's `/login` for that provider, then re-run `/advisor`.
 
@@ -57,8 +63,10 @@ judgment. To turn it back off, run `/advisor` and choose **No advisor**.
 - **The reviewer sees what survived compaction** — the branch is built from Pi's
   resolved LLM context, so compaction and branch summaries are forwarded instead
   of a stale raw replay.
-- **Any model can be the reviewer** — every model you're authenticated for is in
-  the `/advisor` picker, found by fuzzy-typing. No provider is privileged.
+- **Any model can be the reviewer** — every model you're authenticated for is
+  eligible, found by fuzzy-typing. No provider is privileged. When the session's
+  models are scoped, the picker offers the scoped set instead, plus your current
+  advisor while it is still available.
 - **Pick once, it stays picked** — model and effort persist to `advisor.json`
   and are re-applied at every session start.
 - **Skip it when you're already on a strong model** — list executor models in

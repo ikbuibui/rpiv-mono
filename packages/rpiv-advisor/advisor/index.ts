@@ -19,6 +19,7 @@
  *   execute    — the advisor side-call
  *   register   — advisor tool registration
  *   handlers   — mid-session lifecycle handlers
+ *   scope      — session-scoped candidate models for the /advisor picker
  *   restore    — session_start restoration
  *   command    — /advisor slash command
  */
