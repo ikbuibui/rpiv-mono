@@ -69,6 +69,10 @@ judgment. To turn it back off, run `/advisor` and choose **No advisor**.
   advisor while it is still available.
 - **Pick once, it stays picked** — model and effort persist to `advisor.json`
   and are re-applied at every session start.
+- **Always visible which reviewer is live** — while an advisor is configured,
+  the footer shows `Advisor: <provider/model> [• effort]` on its own themed
+  line; it reads `(inactive)` when the current executor strips the tool, and
+  clears when you disable the advisor.
 - **Skip it when you're already on a strong model** — list executor models in
   `disabledForModels` to strip the tool for them, optionally only at or above a
   reasoning-effort threshold. It strips and re-adds live as you switch model or

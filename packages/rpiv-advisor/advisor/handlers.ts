@@ -10,6 +10,7 @@ import { modelKey } from "@juicesharp/rpiv-config";
 import { ADVISOR_TOOL_NAME, MSG_ADVISOR_DISABLED, msgAdvisorRestored } from "./messages.ts";
 import { isExecutorBlocked, isModelBlocked } from "./policy.ts";
 import { getAdvisorEffort, getAdvisorModel } from "./state.ts";
+import { updateAdvisorStatus } from "./status.ts";
 
 interface ReconcileNotify {
 	/** Shown when the tool is stripped (executor became blocked). */
@@ -21,6 +22,12 @@ interface ReconcileNotify {
 // Strip-or-add the advisor tool to match the blocked state, with an optional
 // notify on each transition. Reads the active-tool list itself. Shared by the
 // three lifecycle handlers and the /advisor command's activate step.
+//
+// Also the single sync point for the footer status indicator: every path that
+// enables, disables, strips, or restores the advisor already calls here, so the
+// label is refreshed even when tool membership did not change (effort change,
+// model switch, or an already-correct tool set). Callers that mutate selection
+// state must call this afterwards.
 export function reconcileAdvisorTool(
 	pi: ExtensionAPI,
 	ctx: ExtensionContext,
@@ -35,6 +42,8 @@ export function reconcileAdvisorTool(
 		pi.setActiveTools([...active, ADVISOR_TOOL_NAME]);
 		if (opts.notify && ctx.hasUI) ctx.ui.notify(opts.notify.restored, "info");
 	}
+
+	updateAdvisorStatus(ctx, { blocked: opts.blocked });
 }
 
 export function registerAdvisorBeforeAgentStart(pi: ExtensionAPI): void {

@@ -10,6 +10,7 @@ Versioning: [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - **The `/advisor` picker follows the session-scoped model set.** When `--models` / the `enabledModels` setting narrows a session, `/advisor` now offers only those models instead of every authenticated one, so a scoped model list also scopes what can be picked as a reviewer. With no scope configured the picker keeps offering all available models. The currently configured advisor stays in the list even when it sits outside the scope, so its checkmark is still visible rather than the selection being silently orphaned. Hosts without the `scopedModels` context field read as "no scope" and are unaffected.
+- **The active advisor is shown persistently in the footer.** While an advisor is configured, the status line shows `Advisor: <provider/model> [• effort]` on its own line below the stats/model line, so the current reviewer is visible without re-running `/advisor`. The label is themed (`dim`, with the `(inactive)` marker in `warning`) because Pi does not theme extension status text. It is suffixed `(inactive)` when the executor blocklist has stripped the tool for the current executor, and clears when the advisor is disabled or its model leaves the registry.
 
 ## [2.13.9] - 2026-10-17
 

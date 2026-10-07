@@ -34,6 +34,7 @@ import {
 import { isExecutorBlocked } from "./policy.ts";
 import { getScopedModels, selectAdvisorCandidates } from "./scope.ts";
 import { getAdvisorEffort, getAdvisorModel, setAdvisorEffort, setAdvisorModel } from "./state.ts";
+import { updateAdvisorStatus } from "./status.ts";
 
 // Mirror: packages/rpiv-pi/extensions/rpiv-core/rpiv-models/items.ts
 // buildModelItems — structural twin kept in a separate package by the
@@ -87,6 +88,10 @@ function applyDisable(pi: ExtensionAPI, ctx: ExtensionContext): void {
 	if (active.includes(ADVISOR_TOOL_NAME)) {
 		pi.setActiveTools(active.filter((n) => n !== ADVISOR_TOOL_NAME));
 	}
+	// This path strips the tool inline rather than through reconcileAdvisorTool,
+	// so the footer indicator has to be cleared here too — otherwise a disabled
+	// advisor keeps advertising itself in the status line.
+	updateAdvisorStatus(ctx, { blocked: true });
 	ctx.ui.notify(MSG_ADVISOR_DISABLED, "info");
 }
 

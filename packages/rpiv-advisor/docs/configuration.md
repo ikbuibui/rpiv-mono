@@ -146,3 +146,25 @@ conflicting evidence with one more `advisor` call rather than silently switching
 
 The `Advisor restored: …` announcement fires at most once per process, so
 programmatic session spawns (workflow stages, subagents) do not repeat it.
+
+## Footer status
+
+Separately from the one-shot notifications above, a **persistent status line**
+reports the live selection while an advisor is configured:
+
+| String | When |
+| --- | --- |
+| `Advisor: <label>` | advisor configured and active, no effort set |
+| `Advisor: <label> • <effort>` | advisor configured and active with an effort |
+| `Advisor: <label> [• <effort>] (inactive)` | advisor configured but stripped for the current executor |
+| _(no line)_ | no advisor configured, or its model left the registry |
+
+It renders through Pi's `setStatus("advisor", …)` slot, which appears on its own
+line in the footer. Pi does not theme extension status text, so this extension
+colours it itself: the label is `dim` (matching the footer's stats line) and the
+`(inactive)` marker is `warning` (the state worth noticing). The label is
+refreshed on every enable, disable, session restore, model switch, and
+thinking-level change — including transitions that do not change tool
+membership, so an effort edit is reflected immediately. A failed config save
+leaves the previous label untouched, because the status is only updated after
+the selection is committed in memory. Hosts without UI never call it.

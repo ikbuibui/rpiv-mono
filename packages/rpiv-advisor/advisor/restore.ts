@@ -17,6 +17,7 @@ import {
 } from "./messages.ts";
 import { isExecutorBlocked, setDisabledForModels } from "./policy.ts";
 import { setAdvisorEffort, setAdvisorModel } from "./state.ts";
+import { updateAdvisorStatus } from "./status.ts";
 
 /**
  * Module-local "already announced" latch. Pi fires `session_start` for every
@@ -107,6 +108,10 @@ export function restoreAdvisorState(ctx: ExtensionContext, pi: ExtensionAPI): vo
 	if (!active.includes(ADVISOR_TOOL_NAME)) {
 		pi.setActiveTools([...active, ADVISOR_TOOL_NAME]);
 	}
+	// Inline add — this tail path adds the tool directly rather than routing
+	// through reconcileAdvisorTool, so the footer indicator is refreshed here to
+	// match the restored selection.
+	updateAdvisorStatus(ctx, { blocked: false });
 
 	notifyOnce(msgAdvisorRestored(modelKey(model), effort), "info");
 }
