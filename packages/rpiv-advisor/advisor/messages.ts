@@ -61,3 +61,9 @@ export const msgAdvisorEnabledInactive = (label: string, effort: ThinkingLevel |
 	`Advisor: ${label}${effort ? `, ${effort}` : ""} (inactive for current executor)`;
 export const msgConsulting = (label: string, effort: ThinkingLevel | undefined) =>
 	`Consulting advisor (${label}${effort ? `, ${effort}` : ""})…`;
+
+// Persistent status-line indicator (see advisor/status.ts). Uses " • " rather
+// than the notification comma so the always-on line reads as state, not event.
+export const ADVISOR_STATUS_INACTIVE = "(inactive)";
+export const msgAdvisorStatus = (label: string, effort: ThinkingLevel | undefined, inactive = false) =>
+	`Advisor: ${label}${effort ? ` • ${effort}` : ""}${inactive ? ` ${ADVISOR_STATUS_INACTIVE}` : ""}`;
