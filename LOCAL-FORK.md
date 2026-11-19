@@ -5,13 +5,16 @@ published at `https://github.com/ikbuibui/rpiv-mono` on `local/advisor`, used so
 that two local changes to `packages/rpiv-advisor` survive upstream releases:
 
 1. **Scoped `/advisor` picker** — `packages/rpiv-advisor/advisor/scope.ts`
-   (commit `d083807`).
+   (commit `507fae9`).
 2. **Persistent advisor footer indicator** —
-   `packages/rpiv-advisor/advisor/status.ts` (commit `d9b619f`).
+   `packages/rpiv-advisor/advisor/status.ts` (commit `1e1fd59`).
 
 A third commit, `docs: describe the local rpiv-advisor fork and its rebase
 workflow`, adds this document. It is the only commit that is not part of a
 feature; the two feature commits are self-contained.
+
+Hashes above name the current rebase; they change on every upstream rebase.
+Identify the commits by subject when they drift.
 
 Pi loads it because pi-setup's `config/settings.json` lists
 `${REPO_ROOT}/rpiv-mono/packages/rpiv-advisor` instead of
